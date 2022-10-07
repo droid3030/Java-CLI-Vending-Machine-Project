@@ -31,7 +31,7 @@ public class VendingMachine {
                         products.add(new Gum(valueArray[0], price, valueArray[2]));
                         break;
                     case "Chip":
-                        products.add(new Chip(valueArray[0], price, valueArray[2]));
+                        products.add(new Chip(valueArray[0], valueArray[1], price));
                         break;
                     case "Candy":
                         products.add(new Candy(valueArray[0], price, valueArray[2]));
@@ -40,7 +40,7 @@ public class VendingMachine {
                         products.add(new Drink(valueArray[0], price, valueArray[2]));
                         break;
                     default:
-                        System.out.println("Problem with the files");
+                        System.err.println("Problem with the files");
                         System.exit(1);
                 }
             }
@@ -53,30 +53,29 @@ public class VendingMachine {
     //Getters and Setters
     public BigDecimal getBalance() {
         return Balance;
-    }
+    } //Currency
 
     public void setBalance(BigDecimal balance) {
         Balance = balance;
     }
 
     //Methods
-    public void displayList() {
+    public void displayList() { //change name to getList
         for (Product product : products) {
-            String productString = product.getSlotLocation() + ") " + product.getName()
+            String itemDisplayed = product.getSlotLocation() + ") " + product.getName()
                     + " " + (product.getQuantity() == 0 ? "Sold Out!" : product.getQuantity());
-            String firstChar = product.getSlotLocation().substring(0, 1);
+            String itemFirstChar = product.getSlotLocation().substring(0, 1);
             String productRow = "";
 
-            if (productRow.substring(0, 1).equals(firstChar)) {
-                productRow += " " + productString;
+            if (productRow.substring(0, 1).equals(itemFirstChar)) {
+                //Adds to an existing line.
+                productRow += " " + itemDisplayed;
             } else {
+                //Prints out line and make a new row.
                 System.out.println(productRow);
-                productRow = productString;
+                productRow = itemDisplayed;
             }
         }
         System.out.println("");
     }
 }
-
-
-
