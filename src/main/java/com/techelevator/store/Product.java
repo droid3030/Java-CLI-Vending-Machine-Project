@@ -31,6 +31,12 @@ public class Product {
         Quantity = quantity;
     }
     //Methods
+
+    /**
+     * Checks if there is stock of a product and reduces stock by 1 if there is
+     * @param product product being checked on
+     *
+     */
     public void sellStock(Product product) {
         if (getQuantity() > 0) {
             product.setQuantity(getQuantity() - 1);

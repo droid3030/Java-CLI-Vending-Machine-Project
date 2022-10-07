@@ -13,7 +13,8 @@ public class VendingMachine {
     private static final File FILE = new File("vendingmachine.csv");
 
     private List<Product> products = new ArrayList<>();
-    private BigDecimal Balance;
+    private BigDecimal Balance = new BigDecimal("0");
+
     //Constructors
     public VendingMachine() {
         //Read the file and assign products to the products list
@@ -66,18 +67,28 @@ public class VendingMachine {
         return products;
     }
     //Methods
+
+    /**
+     * Takes money from user in BigDecimal and sets balance to the amount added
+     *
+     * @param money the money entered
+     */
     public void feedMoney(BigDecimal money) {
-        setBalance(getBalance().add(money));
+        if (money.compareTo(new BigDecimal(0)) > 0) {
+            setBalance(getBalance().add(money));
+        }
     }
 
     /**
      * Figures out the change amount you can get from the Balance, and adds it to a list.
+     *
      * @return
      */
-    public List<Integer> giveMoneyBack() {
+    public List<Integer> figureOutChange() {
         List<Integer> coinsCount = new ArrayList<>();
         List<BigDecimal> changeToGet = new ArrayList<>(Arrays.asList(new BigDecimal("0.25"),
                 new BigDecimal("0.1"), new BigDecimal("0.05")));
+
         for (BigDecimal change : changeToGet) {
             Integer coinCount = getBalance().divide(change).intValue();
             setBalance(getBalance().subtract(change.multiply(new BigDecimal(coinCount))));
