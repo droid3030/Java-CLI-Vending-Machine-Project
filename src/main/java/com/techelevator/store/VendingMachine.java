@@ -24,17 +24,24 @@ public class VendingMachine {
             }
             for (String fileLine : fileLines) {
                 String[] valueArray = fileLine.split("\\|");
-                if (valueArray[3] == "Gum") {
-                    products.add(new Gum(valueArray[0], valueArray[1], valueArray[2]));
-                } else if (valueArray[3] == "Chip") {
-                    products.add(new Chip(valueArray[0], valueArray[1], valueArray[2]));
-                } else if (valueArray[3] == "Candy") {
-                    products.add(new Candy(valueArray[0], valueArray[1], valueArray[2]));
-                } else if (valueArray[3] == "Drink") {
-                    products.add(new Drink(valueArray[0], valueArray[1], valueArray[2]));
-                } else {
-                    System.out.println("Problem with the files");
-                    System.exit(1);
+                BigDecimal price = BigDecimal.valueOf(Double.parseDouble(valueArray[1]));
+
+                switch (valueArray[3]) {
+                    case "Gum":
+                        products.add(new Gum(valueArray[0], price, valueArray[2]));
+                        break;
+                    case "Chip":
+                        products.add(new Chip(valueArray[0], price, valueArray[2]));
+                        break;
+                    case "Candy":
+                        products.add(new Candy(valueArray[0], price, valueArray[2]));
+                        break;
+                    case "Drink":
+                        products.add(new Drink(valueArray[0], price, valueArray[2]));
+                        break;
+                    default:
+                        System.out.println("Problem with the files");
+                        System.exit(1);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -55,45 +62,21 @@ public class VendingMachine {
     //Methods
     public void displayList() {
         for (Product product : products) {
-            if (product.getSlotLocation().contains("A")) {
-                if (product.getSlotLocation().contains("1")) {
-                    System.out.println(product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                } else {
-                    System.out.print(" " + product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                }
-            }
-            else if (product.getSlotLocation().contains("B")) {
-                if (product.getSlotLocation().contains("1")) {
-                    System.out.println(product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                } else {
-                    System.out.print(" " + product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                }
-            }
-            else if (product.getSlotLocation().contains("C")) {
-                if (product.getSlotLocation().contains("1")) {
-                    System.out.println(product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                } else {
-                    System.out.print(" " + product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                }
-            }
-            else if (product.getSlotLocation().contains("D")) {
-                if (product.getSlotLocation().contains("1")) {
-                    System.out.println(product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                } else {
-                    System.out.print(" " + product.getSlotLocation() + ") " + product.getName()
-                            + " " + (product.getQuantity() <= 0 ? "Sold Out!" : product.getQuantity()));
-                }
+            String productString = product.getSlotLocation() + ") " + product.getName()
+                    + " " + (product.getQuantity() == 0 ? "Sold Out!" : product.getQuantity());
+            String firstChar = product.getSlotLocation().substring(0, 1);
+            String productRow = "";
+
+            if (productRow.substring(0, 1).equals(firstChar)) {
+                productRow += " " + productString;
+            } else {
+                System.out.println(productRow);
+                productRow = productString;
             }
         }
+        System.out.println("");
     }
 }
 
 
-}
+
