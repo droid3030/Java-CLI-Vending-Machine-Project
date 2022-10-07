@@ -3,8 +3,8 @@ package com.techelevator.store;
 import java.math.BigDecimal;
 
 public class Drink extends Product {
-    public Drink(String name, String slotLocation,  BigDecimal price) {
-        super(name, price, slotLocation);
+    public Drink(String slotLocation, String name, BigDecimal price) {
+        super(slotLocation, name, price);
     }
     //Method
     public int eatingSound() {

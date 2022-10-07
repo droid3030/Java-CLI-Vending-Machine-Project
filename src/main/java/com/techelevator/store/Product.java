@@ -4,15 +4,15 @@ import java.math.BigDecimal;
 
 public class Product {
     //Variables
+    private String slotLocation;
     private String name;
     private BigDecimal price;
-    private String slotLocation;
     private int Quantity = 5;
     //Constructor
-    public Product(String name, BigDecimal price, String slotLocation) { //Change order around
+    public Product(String slotLocation, String name, BigDecimal price) {
+        this.slotLocation = slotLocation;
         this.name = name;
         this.price = price;
-        this.slotLocation = slotLocation;
     }
     //Getters and Setters
     public String getName() {
@@ -31,7 +31,10 @@ public class Product {
         Quantity = quantity;
     }
     //Methods
-    public void sellStock(Product product) { //not finished
-        product.setQuantity(getQuantity() - 1);
+    public void sellStock(Product product) {
+        if (getQuantity() > 0) {
+            product.setQuantity(getQuantity() - 1);
+        }
+
     }
 }

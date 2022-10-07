@@ -13,7 +13,6 @@ public class VendingMachine {
 
     private List<Product> products = new ArrayList<>();
     private BigDecimal Balance;
-
     //Constructors
     public VendingMachine() {
         //Read the file and assign products to the products list
@@ -24,20 +23,23 @@ public class VendingMachine {
             }
             for (String fileLine : fileLines) {
                 String[] valueArray = fileLine.split("\\|");
-                BigDecimal price = BigDecimal.valueOf(Double.parseDouble(valueArray[1]));
+                String slotLocation = valueArray[0];
+                String name = valueArray[1];
+                BigDecimal price = BigDecimal.valueOf(Double.parseDouble(valueArray[2]));
+                String type = valueArray[3];
 
-                switch (valueArray[3]) {
-                    case "Gum":
-                        products.add(new Gum(valueArray[0], price, valueArray[2]));
-                        break;
+                switch (type) {
                     case "Chip":
-                        products.add(new Chip(valueArray[0], valueArray[1], price));
+                        products.add(new Chip(slotLocation, name, price));
                         break;
                     case "Candy":
-                        products.add(new Candy(valueArray[0], price, valueArray[2]));
+                        products.add(new Candy(slotLocation, name, price));
                         break;
                     case "Drink":
-                        products.add(new Drink(valueArray[0], price, valueArray[2]));
+                        products.add(new Drink(slotLocation, name, price));
+                        break;
+                    case "Gum":
+                        products.add(new Gum(slotLocation, name, price));
                         break;
                     default:
                         System.err.println("Problem with the files");
@@ -59,13 +61,17 @@ public class VendingMachine {
         Balance = balance;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
     //Methods
-    public void displayList() { //change name to getList
+    public void getList() { //change name to getList
+        String productRow = " ";
         for (Product product : products) {
             String itemDisplayed = product.getSlotLocation() + ") " + product.getName()
                     + " " + (product.getQuantity() == 0 ? "Sold Out!" : product.getQuantity());
             String itemFirstChar = product.getSlotLocation().substring(0, 1);
-            String productRow = "";
+
 
             if (productRow.substring(0, 1).equals(itemFirstChar)) {
                 //Adds to an existing line.
@@ -76,6 +82,7 @@ public class VendingMachine {
                 productRow = itemDisplayed;
             }
         }
+        System.out.println(productRow);
         System.out.println("");
     }
 }
