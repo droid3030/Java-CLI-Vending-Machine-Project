@@ -35,6 +35,5 @@ public class Product {
         if (getQuantity() > 0) {
             product.setQuantity(getQuantity() - 1);
         }
-
     }
 }
