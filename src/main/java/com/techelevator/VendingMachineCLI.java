@@ -3,6 +3,9 @@ package com.techelevator;
 import com.techelevator.store.Product;
 import com.techelevator.store.VendingMachine;
 import com.techelevator.view.Menu;
+import org.w3c.dom.ls.LSOutput;
+
+import java.util.List;
 
 public class VendingMachineCLI {
 
@@ -33,11 +36,17 @@ public class VendingMachineCLI {
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 				// do purchase
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
+				giveChangeBack();
 				System.out.printf("%nThank you for using our vending machine!");
 				System.exit(1);
 			}
 		}
 	}
+
+	/**
+	 * Loops through list of products and displays (slotLocation, name, price || sold out) in each row.
+	 * Checks for the slot location of each product and prints each different letter in its respective row
+	 */
 	public void getList() {
 		String productRow = " ";
 		for (Product product : vendingMachine.getProducts()) {
@@ -56,6 +65,15 @@ public class VendingMachineCLI {
 		}
 		System.out.println(productRow);
 		System.out.println("");
+	}
+
+	/**
+	 *  Reads from figureOutChange method and returns an integer list of length (3)
+	 *  0 = quarters, 1 = dimes, 2 = nickels
+	 */
+	public void giveChangeBack() {
+		List<Integer> coinsCount = vendingMachine.figureOutChange();
+		System.out.printf("%nYour change is: %s quarters, %s dimes, %s nickels", coinsCount.get(0), coinsCount.get(1), coinsCount.get(2));
 	}
 
 }
