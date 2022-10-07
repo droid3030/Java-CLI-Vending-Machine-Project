@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -65,24 +66,23 @@ public class VendingMachine {
         return products;
     }
     //Methods
-    public void getList() { //change name to getList
-        String productRow = " ";
-        for (Product product : products) {
-            String itemDisplayed = product.getSlotLocation() + ") " + product.getName()
-                    + " " + (product.getQuantity() == 0 ? "Sold Out!" : product.getQuantity());
-            String itemFirstChar = product.getSlotLocation().substring(0, 1);
+    public void feedMoney(BigDecimal money) {
+        setBalance(getBalance().add(money));
+    }
 
-
-            if (productRow.substring(0, 1).equals(itemFirstChar)) {
-                //Adds to an existing line.
-                productRow += " " + itemDisplayed;
-            } else {
-                //Prints out line and make a new row.
-                System.out.println(productRow);
-                productRow = itemDisplayed;
-            }
+    /**
+     * Figures out the change amount you can get from the Balance, and adds it to a list.
+     * @return
+     */
+    public List<Integer> giveMoneyBack() {
+        List<Integer> coinsCount = new ArrayList<>();
+        List<BigDecimal> changeToGet = new ArrayList<>(Arrays.asList(new BigDecimal("0.25"),
+                new BigDecimal("0.1"), new BigDecimal("0.05")));
+        for (BigDecimal change : changeToGet) {
+            Integer coinCount = getBalance().divide(change).intValue();
+            setBalance(getBalance().subtract(change.multiply(new BigDecimal(coinCount))));
+            coinsCount.add(coinCount);
         }
-        System.out.println(productRow);
-        System.out.println("");
+        return coinsCount;
     }
 }
