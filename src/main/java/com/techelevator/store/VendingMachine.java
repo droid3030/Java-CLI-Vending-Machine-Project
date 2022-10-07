@@ -74,7 +74,7 @@ public class VendingMachine {
      * @param money the money entered
      */
     public void feedMoney(BigDecimal money) {
-        if (money.compareTo(new BigDecimal(0)) > 0) {
+        if (money.compareTo(BigDecimal.ZERO) > 0) {
             setBalance(getBalance().add(money));
         }
     }
@@ -96,4 +96,5 @@ public class VendingMachine {
         }
         return coinsCount;
     }
+
 }

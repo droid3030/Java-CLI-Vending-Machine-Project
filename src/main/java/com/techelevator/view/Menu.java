@@ -1,14 +1,18 @@
 package com.techelevator.view;
 
+import com.techelevator.store.VendingMachine;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Menu {
 
 	private PrintWriter out;
 	private Scanner in;
+	private VendingMachine vendingMachine = new VendingMachine();
 
 	public Menu(InputStream input, OutputStream output) {
 		this.out = new PrintWriter(output);
@@ -50,4 +54,5 @@ public class Menu {
 		out.print(System.lineSeparator() + "Please choose an option >>> ");
 		out.flush();
 	}
+
 }

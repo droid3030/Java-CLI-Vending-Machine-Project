@@ -5,7 +5,10 @@ import com.techelevator.store.VendingMachine;
 import com.techelevator.view.Menu;
 import org.w3c.dom.ls.LSOutput;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Scanner;
 
 public class VendingMachineCLI {
 
@@ -13,9 +16,15 @@ public class VendingMachineCLI {
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
 	private static final String MAIN_MENU_OPTION_EXIT = "Exit";
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT };
+	private static final String PURCHASE_MENU_OPTION_FEED_MONEY = "Feed Money";
+	private static final String PURCHASE_MENU_OPTION_SELECT_PRODUCT = "Select Product";
+	private static final String PURCHASE_MENU_OPTION_FINISH = "Finish";
+	private static final String[] PURCHASE_MENU_OPTIONS = {PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH};
+
 
 	private VendingMachine vendingMachine = new VendingMachine();
 	private Menu menu;
+	private Scanner userInput = new Scanner(System.in);
 
 	public static void main(String[] args) {
 		Menu menu = new Menu(System.in, System.out);
@@ -29,13 +38,20 @@ public class VendingMachineCLI {
 
 	public void run() {
 		while (true) {
-			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
+			String choiceFromMenu = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
-			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
+			if (choiceFromMenu.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				getList();
-			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-				// do purchase
-			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
+			} else if (choiceFromMenu.equals(MAIN_MENU_OPTION_PURCHASE)) {
+				while (true) {
+					System.out.printf("%nCurrent money provided: %s%n", vendingMachine.getBalance());
+					String choiceFromPurchase = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+
+					if (choiceFromPurchase.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
+						takeMoneyInput();
+					}
+ 				}
+			} else if (choiceFromMenu.equals(MAIN_MENU_OPTION_EXIT)) {
 				giveChangeBack();
 				System.out.printf("%nThank you for using our vending machine!");
 				System.exit(1);
@@ -76,4 +92,22 @@ public class VendingMachineCLI {
 		System.out.printf("%nYour change is: %s quarters, %s dimes, %s nickels", coinsCount.get(0), coinsCount.get(1), coinsCount.get(2));
 	}
 
+	public void takeMoneyInput() {
+		System.out.printf("%nPlease enter a money amount >>> ");
+		BigDecimal moneyInput = null;
+		try {
+			moneyInput = BigDecimal.valueOf(Double.parseDouble(userInput.nextLine()));
+			if (moneyInput.compareTo(BigDecimal.ZERO) < 0) {
+				System.out.println("Nice Try");
+			} else {
+				vendingMachine.feedMoney(moneyInput);
+			}
+		} catch (NumberFormatException e) {
+			//Eat the exception and display a message to the user below.
+		}
+		if (moneyInput == null) {
+			System.out.println("The input you gave was not valid");
+		}
+
+	}
 }
