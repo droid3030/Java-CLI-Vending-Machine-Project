@@ -96,5 +96,7 @@ public class VendingMachine {
         }
         return coinsCount;
     }
-
+    public void subtractBalanceByItemPrice(BigDecimal price) {
+        setBalance(getBalance().subtract(price));
+    }
 }
