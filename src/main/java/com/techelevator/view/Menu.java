@@ -3,16 +3,16 @@ package com.techelevator.view;
 import com.techelevator.store.Product;
 import com.techelevator.store.VendingMachine;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class Menu {
-
+    private static File log_book = new File("Log.txt");
     private PrintWriter out;
     private Scanner in;
     private VendingMachine vendingMachine = new VendingMachine();
@@ -128,25 +128,41 @@ public class Menu {
      * else it displays "we were unable to process that transaction"
      */
     public void userPurchaseSelection() {
+        int counter = 0;
+
         getList();
         System.out.print("Which snack would you like? ");
         String userInput = in.nextLine();
+
         for (Product product : vendingMachine.getProducts()) {
-            if (product.getSlotLocation().equals(userInput.toUpperCase())) {
-                if (product.getQuantity() > 0 && product.getPrice().compareTo(vendingMachine.getBalance()) < 0) {
-                    //Will happen if there is stock, and price is less than balance.
+            userInput = userInput.toUpperCase();
+            String slotLocation = product.getSlotLocation();
+            int productQuantity = product.getQuantity();
+            String productName = product.getName();
+            BigDecimal productPrice = product.getPrice();
+            BigDecimal balance = vendingMachine.getBalance();
+
+            if (slotLocation.equals(userInput)) {
+                if (productQuantity > 0 && balance.compareTo(productPrice) >= 0) {
+                    //Will happen if there is stock, and balance is enough.
                     product.sellStock();
-                    vendingMachine.subtractBalanceByItemPrice(product.getPrice());
-                    System.out.printf("%nYou have selected %s for %s. Your remaining balance is %s%n", product.getName(), product.getPrice(), vendingMachine.getBalance());
+                    vendingMachine.subtractBalanceByItemPrice(productPrice);
+                    balance = vendingMachine.getBalance();
+                    System.out.printf("%nYou have selected %s for %s. Your remaining balance is %s%n", productName, productPrice, balance);
                     consumingSound(product.typeSoundNumber());
-                    break;
                 } else {
-                    System.out.println("We were unable to process that transaction");
+                    //Will happen if there isn't stock, or price is more than balance.
+                    System.out.println("Unable to do transaction due to lack of product/balance.");
                 }
-            } else if (!product.getSlotLocation().equals(userInput.toUpperCase())) ;
-        }
+                break;
             }
+            counter++;
         }
+        if (counter == vendingMachine.getProducts().size()) {
+            //Happens if it goes through the list, and no item was given
+            System.out.println("Input given was not valid");
+        }
+    }
 
 
     /**
@@ -170,4 +186,24 @@ public class Menu {
                 break;
         }
     }
+
+   public void logAction(String theAction) {
+       DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+       try (PrintWriter logFile = new PrintWriter(new FileWriter("log.txt", true))) {
+           switch (theAction) {
+               case "FEED MONEY":
+                   logFile.format("%s %s: %s %s", dateFormatter, theAction, )
+                   break;
+               case "GIVE CHANGE":
+
+                   break;
+               default:
+
+                   break;
+           }
+       } catch (IOException e) {
+           System.err.println("Exception problem");
+       }
+   }
 }
