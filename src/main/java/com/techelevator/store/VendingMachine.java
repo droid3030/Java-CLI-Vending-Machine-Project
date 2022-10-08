@@ -96,6 +96,11 @@ public class VendingMachine {
         }
         return coinsCount;
     }
+
+    /**
+     * When an item is purchased, it calls this method and updates balance by subtracting item price
+     * @param price
+     */
     public void subtractBalanceByItemPrice(BigDecimal price) {
         setBalance(getBalance().subtract(price));
     }

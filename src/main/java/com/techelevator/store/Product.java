@@ -44,4 +44,12 @@ public class Product {
     public void sellStock() {
         setQuantity(getQuantity() - 1);
     }
+
+    /**
+     * gets number to run through consumingSound()
+     * @return 1 = chip, 2 = candy, 3 = drink, 4 = gum
+     */
+    public int typeSoundNumber() {
+        return 0;
+    }
 }

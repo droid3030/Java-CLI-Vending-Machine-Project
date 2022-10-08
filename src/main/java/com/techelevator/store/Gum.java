@@ -7,7 +7,7 @@ public class Gum extends Product {
         super(slotLocation, name, price);
     }
     //Methods
-    public int eatingSound() {
+    public int typeSoundNumber() {
         return 4;
     }
 }

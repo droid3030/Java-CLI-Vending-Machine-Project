@@ -7,7 +7,7 @@ public class Candy extends Product {
         super(slotLocation, name, price);
     }
     //Method
-    public int eatingSound() {
+    public int typeSoundNumber() {
         return 2;
     }
 }
