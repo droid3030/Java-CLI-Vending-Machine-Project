@@ -5,6 +5,7 @@ import com.techelevator.store.VendingMachine;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -16,6 +17,7 @@ public class Menu {
     private PrintWriter out;
     private Scanner in;
     private VendingMachine vendingMachine = new VendingMachine();
+    private NumberFormat currency = NumberFormat.getCurrencyInstance();
 
     public Menu(InputStream input, OutputStream output) {
         this.out = new PrintWriter(output);
@@ -63,10 +65,12 @@ public class Menu {
      * Checks for the slot location of each product and prints each different letter in its respective row
      */
     public void getList() {
+
         String productRow = " ";
         for (Product product : vendingMachine.getProducts()) {
+            String price = currency.format(product.getPrice());
             String itemDisplayed = product.getSlotLocation() + ") " + product.getName()
-                    + " " + (product.getQuantity() == 0 ? "Sold Out!" : product.getPrice());
+                    + " " + (product.getQuantity() == 0 ? "Sold Out!" : price);
             String itemFirstChar = product.getSlotLocation().substring(0, 1);
 
             if (productRow.substring(0, 1).equals(itemFirstChar)) {
@@ -95,6 +99,8 @@ public class Menu {
             moneyInput = BigDecimal.valueOf(Double.parseDouble(in.nextLine()));
             if (moneyInput.compareTo(BigDecimal.ZERO) > 0) {
                 vendingMachine.feedMoney(moneyInput);
+                String moneyInputAsCurrency = currency.format(moneyInput);
+                logAction("FEED MONEY", moneyInputAsCurrency);
             }
         } catch (NumberFormatException e) {
             //Eat the exception and display a message to the user below.
@@ -108,7 +114,8 @@ public class Menu {
      * displays current money in the machine in a readable format
      */
     public void showBalance() {
-        System.out.printf("%nCurrent money provided: %s%n", vendingMachine.getBalance());
+        String balance = currency.format(vendingMachine.getBalance());
+        System.out.printf("%nCurrent money provided: %s%n", balance);
     }
 
     /**
@@ -116,7 +123,9 @@ public class Menu {
      * 0 = quarters, 1 = dimes, 2 = nickels
      */
     public void giveChangeBack() {
+        String oldBalance = currency.format(vendingMachine.getBalance());
         List<Integer> coinsCount = vendingMachine.figureOutChange();
+        logAction("GIVE CHANGE", oldBalance);
         System.out.printf("%nYour change is: %s quarters, %s dimes, %s nickels%n", coinsCount.get(0), coinsCount.get(1), coinsCount.get(2));
     }
 
@@ -140,6 +149,7 @@ public class Menu {
             int productQuantity = product.getQuantity();
             String productName = product.getName();
             BigDecimal productPrice = product.getPrice();
+            String productPriceAsCurrency = currency.format(product.getPrice());
             BigDecimal balance = vendingMachine.getBalance();
 
             if (slotLocation.equals(userInput)) {
@@ -148,7 +158,9 @@ public class Menu {
                     product.sellStock();
                     vendingMachine.subtractBalanceByItemPrice(productPrice);
                     balance = vendingMachine.getBalance();
-                    System.out.printf("%nYou have selected %s for %s. Your remaining balance is %s%n", productName, productPrice, balance);
+                    String balanceAsCurrency = currency.format(vendingMachine.getBalance());
+                    System.out.printf("%nYou have selected %s for %s. Your remaining balance is %s%n", productName, productPriceAsCurrency, balanceAsCurrency);
+                    logAction(productName + " " + product.getSlotLocation(), productPriceAsCurrency);
                     consumingSound(product.typeSoundNumber());
                 } else {
                     //Will happen if there isn't stock, or price is more than balance.
@@ -187,20 +199,20 @@ public class Menu {
         }
     }
 
-   public void logAction(String theAction) {
-       DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
+    /**
+     * logs action for buying, feeding, and giving change into a txt file
+     *
+     * @param theAction can be GIVE CHANGE or FEED MONEY or (productName + slotLocation)
+     * @param num can be oldBalance or moneyInput or productPrice
+     */
+   public void logAction(String theAction, String num) {
+       DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+        String balance = currency.format(vendingMachine.getBalance());
        try (PrintWriter logFile = new PrintWriter(new FileWriter("log.txt", true))) {
-           switch (theAction) {
-               case "FEED MONEY":
-                   logFile.format("%s %s: %s %s", dateFormatter, theAction, )
-                   break;
-               case "GIVE CHANGE":
-
-                   break;
-               default:
-
-                   break;
+           if ("FEED MONEY".equals(theAction) || "GIVE CHANGE".equals(theAction)) {
+               logFile.format("%s %s: %s %s%n", dateFormatter.format(LocalDateTime.now()), theAction, num, balance);
+           } else {
+               logFile.format("%s %s %s %s%n", dateFormatter.format(LocalDateTime.now()), theAction, num, balance);
            }
        } catch (IOException e) {
            System.err.println("Exception problem");
