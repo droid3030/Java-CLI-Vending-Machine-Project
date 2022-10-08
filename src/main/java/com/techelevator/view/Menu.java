@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 public class Menu {
     private static File log_book = new File("Log.txt");
+    private static File sales_book = new File("Sales.txt");
     private PrintWriter out;
     private Scanner in;
     private VendingMachine vendingMachine = new VendingMachine();
@@ -157,10 +158,11 @@ public class Menu {
                     //Will happen if there is stock, and balance is enough.
                     product.sellStock();
                     vendingMachine.subtractBalanceByItemPrice(productPrice);
-                    balance = vendingMachine.getBalance();
                     String balanceAsCurrency = currency.format(vendingMachine.getBalance());
+
                     System.out.printf("%nYou have selected %s for %s. Your remaining balance is %s%n", productName, productPriceAsCurrency, balanceAsCurrency);
                     logAction(productName + " " + product.getSlotLocation(), productPriceAsCurrency);
+                    vendingMachine.setSalesTotal(vendingMachine.getSalesTotal().add(productPrice));
                     consumingSound(product.typeSoundNumber());
                 } else {
                     //Will happen if there isn't stock, or price is more than balance.
@@ -216,6 +218,17 @@ public class Menu {
            }
        } catch (IOException e) {
            System.err.println("Exception problem");
+       }
+   }
+   public void logSales() {
+       try (PrintWriter salesFile = new PrintWriter(sales_book)) {
+           for (Product product : vendingMachine.getProducts()) {
+               int quantity = 5 - product.getQuantity();
+               salesFile.format("%s|%d%n", product.getName(), quantity);
+           }
+           salesFile.format("%n**TOTAL SALES** %s", currency.format(vendingMachine.getSalesTotal()));
+       } catch (FileNotFoundException e) {
+           System.err.println("Sales file not found");
        }
    }
 }

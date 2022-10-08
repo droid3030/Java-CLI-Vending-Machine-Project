@@ -54,6 +54,7 @@ public class VendingMachineCLI {
                     }
                 }
             } else if (choiceFromMenu.equals(MAIN_MENU_OPTION_EXIT)) {
+                menu.logSales();
                 System.exit(1);
             }
         }

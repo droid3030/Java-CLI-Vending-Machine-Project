@@ -12,6 +12,7 @@ public class VendingMachine {
     //Variables
     private static final File FILE = new File("vendingmachine.csv");
 
+    private BigDecimal salesTotal = new BigDecimal("0");
     private List<Product> products = new ArrayList<>();
     private BigDecimal Balance = new BigDecimal("0");
 
@@ -66,7 +67,13 @@ public class VendingMachine {
     public List<Product> getProducts() {
         return products;
     }
-    //Methods
+    public BigDecimal getSalesTotal() {
+        return salesTotal;
+    }
+    public void setSalesTotal(BigDecimal salesTotal) {
+        this.salesTotal = salesTotal;
+    }
+//Methods
 
     /**
      * Takes money from user in BigDecimal and sets balance to the amount added
