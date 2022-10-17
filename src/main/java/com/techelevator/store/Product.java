@@ -1,13 +1,19 @@
 package com.techelevator.store;
 
+import com.techelevator.enums.CheckValidity;
+import com.techelevator.enums.Sound;
+
 import java.math.BigDecimal;
 
-public class Product {
+public abstract class Product {
     //Variables
+    private final int INITIAL_QUANTITY = 5;
+
     private String slotLocation;
     private String name;
     private BigDecimal price;
-    private int Quantity = 5;
+    private int Quantity = INITIAL_QUANTITY;
+    private CheckValidity validity;
 
     //Constructor
     public Product(String slotLocation, String name, BigDecimal price) {
@@ -17,39 +23,39 @@ public class Product {
     }
 
     //Getters and Setters
-    public String getName() {
-        return name;
+    private int getINITIAL_QUANTITY() {
+        return INITIAL_QUANTITY;
     }
-
-    public BigDecimal getPrice() {
-        return price;
-    } //Change to currency
-
     public String getSlotLocation() {
         return slotLocation;
     }
-
+    public String getName() {
+        return name;
+    }
+    public BigDecimal getPrice() {
+        return price;
+    }
     public int getQuantity() {
         return Quantity;
     }
-
     public void setQuantity(int quantity) {
         Quantity = quantity;
     }
-
+    public CheckValidity getValidity() {
+        return validity;
+    }
+    public void setValidity(CheckValidity validity) {
+        this.validity = validity;
+    }
     //Methods
     /**
-     * Checks if there is stock of a product and reduces stock by 1 if there is
+     * gets an enum from the children classes to run through consumingSound().
      */
-    public void sellStock() {
-        setQuantity(getQuantity() - 1);
-    }
-
+    public abstract Sound getSoundType();
     /**
-     * gets number to run through consumingSound()
-     * @return 1 = chip, 2 = candy, 3 = drink, 4 = gum
+     * Find out the amount quantities sold of this product
      */
-    public int typeSoundNumber() {
-        return 0;
+    public int findQuantitiesSold() {
+        return getINITIAL_QUANTITY() - getQuantity();
     }
 }
