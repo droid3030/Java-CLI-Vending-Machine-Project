@@ -1,5 +1,7 @@
 package com.techelevator.store;
 
+import com.techelevator.enums.Sound;
+
 import java.math.BigDecimal;
 
 public class Chip extends Product{
@@ -8,7 +10,7 @@ public class Chip extends Product{
         super(slotLocation, name, price);
     }
     //Method
-    public int typeSoundNumber() {
-        return 1;
+    public Sound getSoundType() {
+        return Sound.CHIP_SOUND;
     }
 }

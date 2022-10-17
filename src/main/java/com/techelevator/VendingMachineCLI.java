@@ -1,14 +1,6 @@
 package com.techelevator;
 
-import com.techelevator.store.Product;
-import com.techelevator.store.VendingMachine;
 import com.techelevator.view.Menu;
-import org.w3c.dom.ls.LSOutput;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Scanner;
 
 public class VendingMachineCLI {
 
@@ -38,7 +30,7 @@ public class VendingMachineCLI {
             String choiceFromMenu = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
             if (choiceFromMenu.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-                menu.getList();
+                menu.displayList();
             } else if (choiceFromMenu.equals(MAIN_MENU_OPTION_PURCHASE)) {
                 while (true) {
                     menu.showBalance();

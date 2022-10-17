@@ -1,5 +1,8 @@
 package com.techelevator.store;
 
+import com.techelevator.enums.CheckValidity;
+import com.techelevator.exceptions.InputEnteredException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -14,7 +17,7 @@ public class VendingMachine {
 
     private BigDecimal salesTotal = new BigDecimal("0");
     private List<Product> products = new ArrayList<>();
-    private BigDecimal Balance = new BigDecimal("0");
+    private BigDecimal balance = new BigDecimal("0");
 
     //Constructors
     public VendingMachine() {
@@ -28,7 +31,7 @@ public class VendingMachine {
                 String[] valueArray = fileLine.split("\\|");
                 String slotLocation = valueArray[0];
                 String name = valueArray[1];
-                BigDecimal price = BigDecimal.valueOf(Double.parseDouble(valueArray[2]));
+                BigDecimal price = new BigDecimal(valueArray[2]);
                 String type = valueArray[3];
 
                 switch (type) {
@@ -57,23 +60,30 @@ public class VendingMachine {
 
     //Getters and Setters
     public BigDecimal getBalance() {
-        return Balance;
-    } //Currency
+        return balance;
+    }
 
     public void setBalance(BigDecimal balance) {
-        Balance = balance;
+        this.balance = balance;
     }
 
     public List<Product> getProducts() {
         return products;
     }
+
     public BigDecimal getSalesTotal() {
         return salesTotal;
     }
-    public void setSalesTotal(BigDecimal salesTotal) {
-        this.salesTotal = salesTotal;
+
+    //Methods
+
+    /**
+     * A method that adds to the salesTotal variable whenever it's called
+     * @param salesTotal the amount of money you're adding to salesTotal.
+     */
+    private void addToSalesTotal(BigDecimal salesTotal) {
+        this.salesTotal = this.salesTotal.add(salesTotal);
     }
-//Methods
 
     /**
      * Takes money from user in BigDecimal and sets balance to the amount added
@@ -105,10 +115,46 @@ public class VendingMachine {
     }
 
     /**
-     * When an item is purchased, it calls this method and updates balance by subtracting item price
-     * @param price
+     * When an item is purchased, it calls this method and updates both the balance and the stock
+     * by calling the set methods.
+     *
+     * @param product the current product being sold.
      */
-    public void subtractBalanceByItemPrice(BigDecimal price) {
-        setBalance(getBalance().subtract(price));
+    private void updateInventory(Product product) {
+        product.setQuantity(product.getQuantity() - 1);
+        setBalance(getBalance().subtract(product.getPrice()));
+    }
+
+    /**
+     * Checks if the item exists, and if you can buy that item.
+     *
+     * @param enteredSlotLocation used in the for loop to return the specific product.
+     * @return the desired product to the menu.
+     */
+    public Product purchaseItem(String enteredSlotLocation) {
+        Product resultProduct = null;
+
+        for (Product product : products) {
+            if (enteredSlotLocation.toUpperCase().equals(product.getSlotLocation())) {
+                int quantity = product.getQuantity();
+                BigDecimal balance = getBalance();
+                BigDecimal price = product.getPrice();
+
+                if (quantity == 0) {
+                    product.setValidity(CheckValidity.NOT_ENOUGH_STOCK);
+                } else if (balance.compareTo(price) < 0) {
+                    product.setValidity(CheckValidity.NOT_ENOUGH_MONEY);
+                } else {
+                    updateInventory(product);
+                    addToSalesTotal(price);
+                    product.setValidity(CheckValidity.VALID);
+                }
+                resultProduct = product;
+            }
+        }
+        if (resultProduct == null) {
+            throw new InputEnteredException();
+        }
+        return resultProduct;
     }
 }

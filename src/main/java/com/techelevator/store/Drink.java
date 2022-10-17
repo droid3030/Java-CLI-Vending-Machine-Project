@@ -1,5 +1,7 @@
 package com.techelevator.store;
 
+import com.techelevator.enums.Sound;
+
 import java.math.BigDecimal;
 
 public class Drink extends Product {
@@ -7,7 +9,7 @@ public class Drink extends Product {
         super(slotLocation, name, price);
     }
     //Method
-    public int typeSoundNumber() {
-        return 3;
+    public Sound getSoundType() {
+        return Sound.DRINK_SOUND;
     }
 }
